@@ -1,0 +1,240 @@
+//Starting Basics Commands
+1. db
+2. show dbs
+3. use zipTest
+4. db.help()
+5. db.stats()
+6. show roles
+
+// Insert Command
+1. db.movie.insert({"name":"tutorials point"})
+2. db.tutorialspoint.insert({"name" : "tutorialspoint"})
+
+// Drop Command
+1. db.dropDatabases()
+2. db.mycollection.drop() //Collection Drop Command
+
+
+// Collection Command
+1. db.createCollection('mycollection')
+2. show collections
+3. db.createCollection("mycol", { capped : true, autoIndexID : true, size : 6142800, max : 10000 } )
+
+
+// Example of Insert
+1. db.createCollection("post")
+2. db.post.insert([{title: "MongoDB Overview", description:"MongoDB is no SQL database", by: "tutorials point", url:"http//",tags:["mongodb","database","NoSQL"],likes:1000}])
+
+// Example of users
+1. db.users.insert({name:"Rohit", admin:"Security",isDeleted:false})
+2. db.users.insert({name:"Nikhar", admin:"Security",isDeleted:false})
+3. db.users.insert({name:"Ayush", admin:"HR",isDeleted:true})
+4. db.users.insert({name:"Azad", admin:"HR",isDeleted:true})
+5. db.users.insert({name:"Abhishek", admin:"HR",isDeleted:true})
+6. db.users.insert({name:"Abhishek", admin:"Finance",isDeleted:false})
+7. db.users.insert({name:"Avinash", admin:"Finance",isDeleted:true})
+8. db.users.insert({name:"Vidhya", admin:"System Admin",isDeleted:true})
+
+// Find Query for users
+01. db.users.find().pretty()
+02. db.users.find({admin:"Security"}).pretty()
+03. db.users.find({isDeleted:false}).pretty()
+04. db.users.find({isDeleted:false},{_id:0,"isDeleted":0}).pretty()
+05. db.users.find({isDeleted:false},{_id:1,"isDeleted":1}).pretty()
+06. db.users.find({'name':/A+/},{_id:0,"isDeleted":0,"admin":0}).sort({'name':-1}).pretty()
+07. db.users.find({'name':/A+/},{_id:0,"isDeleted":1,"admin":0}).sort({'name':1}).pretty()
+08. db.users.find({$where:`this.name==="Nikhar"`},{_id:0,"isDeleted":0,"admin":0}).sort({'name':-1}).pretty()
+09. db.users.find({'name':/^n/i},{_id:0,"isDeleted":0,"admin":0}).sort({'name':-1}).pretty()
+10. db.users.find({'name':/^r/i},{_id:0,"isDeleted":0,"admin":0}).sort({'name':-1}).pretty()
+11. db.users.find({'name':/^a/i},{_id:1,"isDeleted":0,"admin":0}).sort({'name':-1}).skip(4).pretty()
+12. db.users.find({'name':/^a/i},{_id:1,"isDeleted":0,"admin":0}).sort({'name':1}).skip(0).limit(2).pretty()
+
+// Update Query for users
+01. db.users.update({"admin":"HR"},{$set:{"admin":"System Admin"}},{multi:true})
+02. db.users.update({"name":"Abhishek"},{"name":"Abhishek","admin":"HR","isDeleted":"true"})
+
+// Find and Modify Command
+01. db.users.findAndModify({query:{name:"Vidhya"},update:{$set:{admin:"Finance"}},new:true})
+
+
+//Example-2
+01. db.employee.insertMany([{_empID:"BRI02201" , name:"Aryan", email:"aryan@mail.com", salary:25000, mobile:9956778989},{_empID:"BRI02202", name:"Atishay",email:"atishay@mail.com", mobile:8988766468}])
+02. db.employee.insertMany([{_empID:"BRI02203" , name:"Ranjan", email:"ranjan@mail.com", salary:65000, mobile:9986778989},{_empID:"BRI02204", name:"Nighar",email:"nighar@mail.com", mobile:8980766468}])
+
+// Create Index
+03. db.employee.createIndex("_empID":1})
+
+
+04. db.empPerDetails.insertOne({First_Name:"Aryan", Last_Name:"Sharma", Date_Of_Birth: "1995-09-26"}})
+05. db.empPerDetails.insertOne({First_Name:"Atishay", Last_Name:"Gupta", Date_Of_Birth: "1999-09-26"})
+06. db.empPerDetails.insertOne({First_Name:"Nighar", Last_Name:"Rai", Date_Of_Birth: "1999-12-20"})
+
+//Update Query
+01. db.empPerDetails.update({"Date_Of_Birth":"1995-09-26"},{$set:{'Date_Of_Birth':"1995-08-26"}})
+02. db.empPerDetails.update({'First_Name':"Aryan"},{"First_Name":"Aryan","Last_Name":"Sharma","Date_Of_Birth":"1995-08-22" })
+
+
+// Aggregate Command for join two records
+01. db.employee.aggregate([{$lookup:{from:"empPerDetails",localField:"name",foreignField:"First_Name",as:"birth_info"}}])
+
+// Complex Aggregate Command 
+01. db.employee.aggregate([{$lookup:{from:"empPerDetails",localField:"name",foreignField:"First_Name",as:"birth_info"}},{$unwind:"$birth_info"},{$project:{"_id":0,"name":"$birth_info.First_Name","mobile":1,"lastName":"$birth_info.Last_Name","email":1,"birth":"$birth_info.Date_Of_Birth"}}]).pretty()
+
+
+////////////////Task//////////////////
+Q.1.Create Your Own Database With Name “CgProductDB”.
+1.1 use CgProductDB
+
+Q.2 Create Collection with name “ProductCollection” in the above database.
+1.2 db.createCollection('ProductCollections')
+
+Q.3 Insert unique product id , item , product category , product price , product quantity,orderInfo,coords, email,mobile in above “ProductCollection”
+• “Order info” has unique order id, order date and address
+• “Address” has street, city, state and zip code.
+• “cords” is the array having x, y coordinates of GPS
+Note: Insert Minimum 5 product information .
+Category should be “Jewellery”, ”Stationary”, ”Clothing” OR “Electronics”
+Add Minimum 8 product Records in the above collection
+
+1.3.1 db.ProductCollections.insert({"productId":123,"item":"Laptop","productCategory":"Electronics","productPrice":25000,"productQuantity":100,"orderInfo":{"orderId":2201,"orderDate":"23-02-2022","address":{"street":"Jawahar Road","city":"Guna","zipCode":473100}},"coords":[{"x":101.10,"y":209.09}],"email":"aryan@gmail.com","mobile":9907707878})
+1.3.2
+db.ProductCollections.insert({"productId":124,"item":"Necklace","productCategory":"Jewellery","productPrice":125000,"productQuantity":10,"orderInfo":{"orderId":2001,"orderDate":"22-02-2022","address":{"street":"Gandhi Road","city":"Aron","zipCode":473101}},"coords":[{"x":19001.10,"y":2.9009.09}],"email":"arjav@gmail.com","mobile":9707707878})
+1.3.3
+db.ProductCollections.insert({"productId":125,"item":"ClassMate NoteBook","productCategory":"Stationary","productPrice":120,"productQuantity":1,"orderInfo":{"orderId":2101,"orderDate":"20-02-2022","address":{"street":"Tilak Road","city":"Agra","zipCode":476701}},"coords":[{"x":19781.10,"y":2009.09}],"email":"priya.arjav@gmail.com","mobile":9767707878})
+1.3.4
+db.ProductCollections.insert({"productId":126,"item":"Jeans","productCategory":"Clothing","productPrice":1200,"productQuantity":2,"orderInfo":{"orderId":2901,"orderDate":"20-02-2019","address":{"street":"Kaservadavali","city":"Thane","zipCode":478901}},"coords":[{"x":191.10,"y":6709.09}],"email":"priya.pooja@gmail.com","mobile":9767707348})
+1.3.5
+db.ProductCollections.insert({"productId":127,"item":"Ear Pods","productCategory":"Electronics","productPrice":1200,"productQuantity":3,"orderInfo":{"orderId":2011,"orderDate":"20-02-2021","address":{"street":"Gulabganj","city":"Patna","zipCode":471201}},"coords":[{"x":1788.10,"y":6349.09}],"email":"abhay.kumar@gmail.com","mobile":9767734348})
+1.3.6
+db.ProductCollections.insert({"productId":128,"item":"Ring","productCategory":"Jewellery","productPrice":12500,"productQuantity":1,"orderInfo":{"orderId":112001,"orderDate":"28-02-2022","address":{"street":"Olympous","city":"Thane","zipCode":460001}},"coords":[{"x":19901.10,"y":2089.09}],"email":"pallavi@gmail.com","mobile":9778707878})
+1.3.7 db.ProductCollections.insert({"productId":129,"item":"Ring","productCategory":"Jewellery","productPrice":12500,"productQuantity":1,"orderInfo":{"orderId":112901,"orderDate":"28-02-2022","address":{"street":"Olympous","city":"Thane","zipCode":460001}},"coords":[{"x":19901.10,"y":2909.09}],"email":"neha@gmail.com","mobile":9778237878})
+1.3.8 
+db.ProductCollections.insert({"productId":130,"item":"T-Shirt","productCategory":"Clothing","productPrice":1200,"productQuantity":2,"orderInfo":{"orderId":892901,"orderDate":"20-02-2019","address":{"street":"Kaservadavali","city":"Thane","zipCode":478901}},"coords":[{"x":191.10,"y":6709.09}],"email":"priya.pooja@gmail.com","mobile":9767707348})
+1.3.9 
+db.ProductCollections.insert({"productId":200,"item":"T-Shirt","productCategory":"Clothing","productPrice":1200,"productQuantity":2,"orderInfo":{"orderId":20201,"orderDate":"20-02-2019","address":{"street":"Kaservadavali","city":"Thane","zipCode":478901}},"coords":[{"x":191.10,"y":6709.09}],"email":"priya.pooja@gmail.com","mobile":9767707348})
+1.3.10
+db.ProductCollections.insert({"productId":201,"item":"T-Shirt","productCategory":"Clothing","productPrice":1200,"productQuantity":2,"orderInfo":{"orderId":20202,"orderDate":"20-02-2019","address":{"street":"Kaservadavali","city":"Thane","zipCode":478901}},"coords":[{"x":191.10,"y":6709.09}],"email":"priya.pooja@gmail.com","mobile":9767707348})
+1.3.11
+db.ProductCollections.insert({"productId":202,"item":"Ring","productCategory":"Jewellery","productPrice":12500,"productQuantity":1,"orderInfo":{"orderId":20203,"orderDate":"28-02-2022","address":{"street":"Olympous","city":"Thane","zipCode":460001}},"coords":[{"x":19901.10,"y":2909.09}],"email":"neha@gmail.com","mobile":9778237878})
+1.3.12
+db.ProductCollections.insert({"productId":203,"item":"Ear Pods","productCategory":"Electronics","productPrice":1200,"productQuantity":3,"orderInfo":{"orderId":20204,"orderDate":"20-02-2021","address":{"street":"Gulabganj","city":"Patna","zipCode":471201}},"coords":[{"x":1788.10,"y":6349.09}],"email":"abhay.kumar@gmail.com","mobile":9767734348})
+1.3.13
+db.ProductCollections.insert({"productId":205,"item":"CD","productCategory":"Electronics","productPrice":1200,"productQuantity":2,"orderInfo":{"orderId":20205,"orderDate":"20-02-2019","address":{"street":"Kaservadavali","city":"Thane","zipCode":478901}},"coords":[{"x":191.10,"y":6709.09}],"email":"priya.pooja@gmail.com","mobile":9767707348})
+1.3.14
+db.ProductCollections.insert({"productId":206,"item":"CD","productCategory":"Clothing","productPrice":1200,"productQuantity":2,"orderInfo":{"orderId":20206,"orderDate":"20-02-2019","address":{"street":"Kaservadavali","city":"Thane","zipCode":478901}},"coords":[{"x":191.10,"y":6709.09}],"email":"priya.pooja@gmail.com","mobile":9767707348})
+
+
+Q.4 Fetch the product based on unique product id.
+1.4 db.ProductCollections.find().sort({'productId':1}).pretty()
+
+Q.5 Fetch all product details except coord , email.
+1.5 db.ProductCollections.find({},{_id:0,"coords":0,"email":0}).pretty()
+
+Q.6 Add the orderstatus = “pending” field for product id “3”
+1.6.1 db.ProductCollections.update({},{$set:{"orderInfo.orderStatus":"success"}},{multi:true}) // Add orderStatus First.
+1.6.2 db.ProductCollections.updateOne({"productId":203},{$set:{"orderInfo.orderStatus":"pending"}})
+Note:  db.ProductCollections.update({},{$unset:{"orderInfo.${}":1}}, false, true) //To unset
+Ex: db.ProductCollections.findAndModify({query:{"productId":203},update:{$set:{"orderstatus":"pending"}},new:true})
+
+Q.7 Update the product price by 5000 for product name “Laptop”
+1.7 db.ProductCollections.updateOne({"item":"Laptop"},{$set:{"productPrice":5000}})
+Ex: db.ProductCollections.findAndModify({query:{"item":"Laptop"},update:{$set:{"productPrice":5000}},new:true})
+
+Q.8 Update the product price by 5000 for all product having product name “Laptop”
+1.8.1 db.ProductCollections.update({"item":"Ring"},{$set:{"productPrice":5000}},{multi:true})
+1.8.2 db.ProductCollections.find({"item":"Ring"}).pretty()
+
+Q.9 Add one more mobile number in mobiles field of order information for order id “2”
+1.9.1 db.ProductCollections.update({"orderInfo.orderId":20206},{$set:{"orderInfo.mobile2":9755566693}})
+1.9.2 db.ProductCollections.update({"orderInfo.orderId":20206},{$unset:{"orderInfo.mobile2":1}})
+1.9.3 db.ProductCollections.update({"orderInfo.orderId":20206},{$set:{"mobile2":9755566693}})
+Ex: db.ProductCollections.update({"orderInfo.orderId":20206},{$push:{"orderInfo.0.mobile":[9755566692,9755566693]}},{multi:true})
+
+Q.10 Update the product price to “40.00 “and product category to “electronics” for the product having item name “CD”. Insert the product if it is not existing.
+1.10 db.ProductCollections.update({"item":"CD"},{$set:{"productPrice":40.00,"productCategory":"Electronics"}},{multi:true})
+
+
+Q.11  Rename “item” field to “productName” in the above collection
+1.11 db.ProductCollections.update({},{$rename:{"item":"productName"}},{multi:true})
+
+Q.12 Remove the product with _id=4.
+1.12 db.ProductCollections.remove({"productId":206})
+
+Q.13 Remove all products which product name starts with "C"
+1.13 db.ProductCollections.remove({'productName':/C+/})
+Ex: db.ProductCollection.remove({"productName":/^c/i})
+
+Q.14 Find the product having productType as either “Electronics” OR “TV”
+1.14 db.ProductCollections.find({$or :[{'productCategory':"Jewellery"},{ "productCategory":"Electronics"}]}).pretty()
+Ex db.ProductCollections.find({"productCategory":{ $in: ["Electronics","Jewellery"]}}).pretty()
+
+
+Q.15 Show the list of those product having price greater than 40000.
+1.15 db.ProductCollections.find({'productPrice':{$gt: 40000}}).pretty()
+
+Q.16 Display only product name, product type and product price for those product having price greater than 40000.
+1.16 db.ProductCollections.find({"productPrice":{$gt: 40000}},{"_id":0,"productName":1,"productPrice":1,"productCategory":1}).pretty()
+
+Q.17 Display only product name, product type and product price for those product having price greater than 40000. But show only first 3 documents
+1.17 db.ProductCollections.find({"productPrice":{$lt: 40000}},{"_id":0,"productName":1,"productPrice":1,"productCategory":1}).limit(3).pretty()
+
+
+Q.18 Find all documents which are delivered in state “MS”
+1.18 db.ProductCollection.find( {"order_Info.address.state":"MS"} ).pretty()
+
+Q.19 Sort products as per price in descending order.
+1.19 db.ProductCollections.find({}).sort({"productPrice":1}).pretty()
+
+Q.20 Sort product as per product category.
+1.20 db.ProductCollections.find({}).sort({"productCategory":1}).pretty()
+
+
+Q.21 Display only first 3 products
+1.21 db.ProductCollection.find().sort( { "product_id": 1 } ).limit(3).pretty()
+
+Q.22 Create product order report as follows.
+     Display-Product Name: ____ Product Category: ________ Product Price:_____ Order Date:______ Order State:_______
+1.22 db.ProductCollections.find({},{'productName':1,'productCategory':1,'productPrice':1,'orderInfo.orderDate':1,'orderInfo.address.state':1, '_id':0}).pretty()
+
+Q.23 Find the products document maching state in “MS” OR “UP”.
+1.23 db.ProductCollections.find({$or:[{"orderInfo.address.state":"MS"},{"orderInfo.address.state":"UP"}]}).pretty()
+
+Q.24 Find those products havine price >40000 and delivered in state “MS”.
+1.24 db.ProductCollections.find({$and:[{"orderInfo.address.state":"UP"},{productPrice:{$gt:40000}}]}).pretty()
+
+Q.25 Find List of all “Electronics” delivered in city “Pune”
+1.25 db.ProductCollections.find({$and:[{'orderInfo.address.city':'Pune'},{'productCategory':'Electronics'}]}).pretty()
+
+Q.26. Sort the product by product category in ascending order and print it one by one using cursor.
+1.26  db.ProductCollections.find({}).sort({"productCategory":1}).pretty()
+
+Q2.1 Display the product with “electronic” category.
+--> db.ProductCollections.find({'productCategory':'Electronics'}).sort({'productCategory':1}).pretty()
+
+Q2.2 Group the product category wise and display the count.
+--> db.ProductCollections.aggregate({$group:{_id:"$productCategory", count:{$count:{}}}})
+
+Q2.3 Display how many number of products available for “Jewellery” category.
+--> db.ProductCollections.aggregate({$match:{"productCategory":"Jewellery"}},{$group:{_id:"$productCategory", count:{$count:{}}}})
+
+Q2.4 Calculate the average amount and average quantity for each category of product.
+--> db.ProductCollections.aggregate({$group:{_id:"$productCategory", avgAmount:{$avg:{$multiply:["$productPrice","$productQuantity"]}},averageQuantity:{$avg:"$productQuantity"},count:{$sum:1}}})
+
+Q2.5 Find product name, product category, price for those product having quantity greater than 30.
+Show only first 3 record.
+--> db.ProductCollections.find({"productQuantity":{$gt: 30}},{"productName":1,"productCategory":1,"productPrice":1}).limit(3).pretty()
+
+Q2.6 Sort the product quantity wise in ascending order
+--> db.ProductCollections.find({}).sort({"productQuantity":1}).pretty()
+
+Q2.7 Display the sum of total sale price category wise.
+--> db.ProductCollections.aggregate({$group:{_id:"$productCategory",totalAmount:{$sum:{$multiply:["$productPrice","$productQuantity"]}},averageQuantity:{$avg:"$productQuantity"},count:{$sum:1}}})
+
+Q2.8 Find out which product is most selling product.
+--> db.ProductCollections.find({},{_id:0,productName:1,productQuantity:1,productPrice:1}).sort({productQuantity:-1}).limit(1).pretty()
+
+Q2.9 Find the product list which was ordered in year “2010”
+--> db.ProductCollections.find({"orderInfo.orderDate":{$regex:"2022"}}).pretty()
+
+Q2.10 Display category wise product name and product price
+--> db.ProductCollections.aggregate([{$group:{_id:'$productCategory', productName:{$push:'$productName'}, productPrice:{$push:'$productPrice'}}}]).pretty()

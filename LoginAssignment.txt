@@ -1,0 +1,13 @@
+// Create a DB for login user creds:
+1. use assignments;
+
+//Insert Users Details:
+2. db.usersCollection.insertMany([{"username":'Rohit', "password":"ro@it2022","emailId":"rohit@gmail.com","mobile":9788899989},{"username":"Abhay", "password":"ab@ay2022","emailId":"abhay@gmail.com","mobile":9898909989},{"username":"Vikas","password":"vi@as2022","emailId":"vikas@gmail.com","mobile":9898899989}])
+
+
+
+//Find particular user details to check whether it is exist or not.
+3.db.usersCollection.find({'username':"Rohit",'password':"ro@it2022"}).pretty()
+
+//Forget Password
+4.db.usersCollection.findAndModify({query:{'emailId':'rohit@gmail.com'},update:{$set:{password:"roh@t2022"}}, upsert:false, new:false})
